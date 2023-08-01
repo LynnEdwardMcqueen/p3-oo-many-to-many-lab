@@ -1,4 +1,5 @@
 from datetime import *
+from operator import attrgetter
 
 class Author:
     all = []
@@ -18,6 +19,18 @@ class Author:
             if ret_obj.author == self:
                 return_book_list.append(ret_obj.book)
         return return_book_list
+    
+    def sign_contract(self, book, date, royalties):
+        return Contract(self, book, date, royalties)
+    
+    def total_royalties(self):
+        contracts = self.contracts()
+        royalty_sum = 0
+        for contract in contracts:
+            royalty_sum += contract.royalties
+        return(royalty_sum)
+
+      
 
 
 class Book:
@@ -65,40 +78,10 @@ class Contract:
     def date(self, date):
         self._date = datetime.strptime(date, '%m/%d/%Y')
 
-author1 = Author("Rosetta Stone")
-book1 = Book("One Flew Over the PooPoo Chair")
-contract1 = Contract(author1, book1 , '01/02/2003', 50000)
-               
-book2 = Book("Hands on Assets")
-contract2 = Contract(author1, book2, "02/03/2004", 1000 )
 
-book3 = Book("A Willing Volunteer")
-author2 = Author("Linda Anderson")
-contract3 = Contract(author2, book3, "03/04/2005", 80000)
-
-contracts = author1.contracts()
-for contract in contracts:
-    print(contract.book.title)
-
-
-
-contracts2 = author2.contracts()
-for contract in contracts2:
-    print(contract.book.title)
-
-author1books = author1.books()
-print("Author1 books")
-for book in author1books:
-    print(book.title)
-
-contracts = book1.contracts()
-print("Book contracts")
-for contract in contracts:
-    print(contract.book.title)
-
-authors = book1.authors()
-print("Book Authors")
-print(authors[0].name)
-
-
+    @classmethod
+    def contracts_by_date(cls):
+        ret_list = Contract.all
+        ret_list.sort(key = attrgetter("date") )
+        return(ret_list)
 
